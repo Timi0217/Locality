@@ -1,0 +1,123 @@
+/*
+* Favour Okereke-Mba; FOKERE01
+* Timi Dayo-Kayode; ODAYOK01
+* COMP 40 = HW 3: README
+* 02/20/2018
+*/
+________________________________________________________________________________
+1. Programming Creators:
+--------------------------------------------------------------------------------
+Favour Okerekemba and Timi Dayo-Kayode
+
+________________________________________________________________________________
+2. Help Recieved:
+--------------------------------------------------------------------------------
+The TA's helped us with some debugging issues in Part C of the homework. We 
+also discussed some concepts regarding how to perform the image rotations with
+Maxwell Ekechechukwu, and Josh Tso. Our code also makes use of the starter code
+provided by Mark.
+
+________________________________________________________________________________
+3. Correctly Implemented Parts of The Specification:
+--------------------------------------------------------------------------------
+We correctly implemented all parts of the homework to the best of our knowledge
+and ability and also did the extra credit; flip horizontal, flip vertical, and 
+transpose.
+
+________________________________________________________________________________
+4. Documentation of Program Architecture:
+--------------------------------------------------------------------------------
+PART A: BLOCKED ARRAY:
+--------------------------------------------------------------------------------
+This program divides a 2D array into blocks of a specified size and makes sure 
+each cell in a block is contigous in memory. It is represented as a 2D array of 
+size (row * col) where col is the number of blocks column wise and row is the 
+number of blocks row wise. Each slot in this 2D array contains a single 1D array
+that represents a block, hence, the number of elements in the 1D array is equal 
+to the number of elements in a block. The interface contains functions to return
+the size of the number of rows and columns in the 2D array, the blocksize of 
+the array and the size of elements in the array. It also provides functions to 
+map over all elements in the blocked array, free all allocated memory associated
+with the blocked array, and get pointers to elemens at a specific col and row 
+in the 2D blocked array. It provides two new functions: one lets the user 
+determine the blocksize and the other determines the blocksize based on the 
+size of each individual element to be stored in the 2D array. 
+--------------------------------------------------------------------------------
+PART C: PPMTRANS:
+--------------------------------------------------------------------------------
+This program transformed images based on specifications form the user. Both the 
+original and the final transformed image are stored in a Pnm_ppm struct that 
+conatins the array of pixels, a method pointer and dimension information for the
+image that is stored in the struct. We use the read function from the Pnm_ppm 
+interface to read the image from the soecified source and then use a mapping 
+function to carry out the transformation. At every cell of the original source 
+image, the new coordinates in the final rotation image is calculated and the 
+pixel at that cell is stored in the proper cell in the final image. We use 
+the CPU_Timing interface to time every transformation and write the timing 
+information to a specified location. We then use a read function from the 
+Pnm_ppm interface to write the final rotated image to stdout. This program 
+makes use of A2plain amd A2blocked. A2plain exports the functions of the 
+UArray2_T inerface and A2blocked exports the fucntions the UArray2b_T interface.
+They are both abstracted into a client usable suite called A2Methods.  
+
+________________________________________________________________________________
+5. Measured Performance for Part E
+--------------------------------------------------------------------------------
+Name and Model of Computer: MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)
+The program was run however on the HAlligan Servers
+CPU: AMD Opteron(tm) Processor 6380
+CPU speed: 2500.030 MHz
+
+
+The Table below represents the time per input pixel
+Time is in nanseconds unless stated otherwise
+________________________________________________________________________________
+Image Size: 62500
+________________________________________________________________________________
+Transfprmation  |       Block Major     |       Row Major       |  Column Major
+________________________________________________________________________________
+Rotate 0        |           29          |           29          |       29
+________________________________________________________________________________
+Rotate 90       |           67          |           52          |       47
+________________________________________________________________________________
+Rotate 180      |           77          |           56          |       61
+________________________________________________________________________________
+Rotate 270      |           72          |           61          |       54
+________________________________________________________________________________
+Flip Horizontal |           72          |           58          |       55
+________________________________________________________________________________
+Flip Vertical   |           70          |           51          |       60
+________________________________________________________________________________
+Transpose       |           65          |           49          |       50
+________________________________________________________________________________
+
+The table above shows the times for row and col are similar when performing a 
+transformation that would switch the dimensions of the oroginal sourcce image. 
+That is when performing a rotation of 90 or 270 degrees and performing a 
+transpose. We believe this is because in these types of transformations, row 
+major reads rows from the source and writes to columns in the output, while it 
+is the inverse for column major. Due to this, there will be minimal cache misses
+for reading but maximal cache misses for writing when row major is performed and
+there will be maximal cache misses for reading but minimal cache misses for 
+writing when column major is perrformed. Hence on these transformations, 
+row major and column major are complements of each other which leads to roughly 
+the same number of misses. 
+
+As stated in part D of this assignment, when the column and rows of the 
+destination image remained the same as that of the source image, column major 
+performded worse than row major. This is so because it read in pixels column
+wise from the source image and wrote the pixels to the destination image 
+column wise as well. This maximises the number of cache misses in both reading 
+and writing. On the other hand, row major reads in row major from the source 
+image and writes column major to the destination image. This minimises the 
+number of cache misses.
+
+It is observed that block-major performed the worst on almost every transform 
+despite the expectation that it is meant to perform the best. We concluded that
+this is due to the fact that the at and map functions of UArray2b is complicated
+and has to deal with a lot of arithmetic operations to find the correct index of
+the destination pixel. Hence without the compicated runtime of the map
+function in the UArray2b interface, it is expected to perform the best. 
+________________________________________________________________________________
+6. We spent approximately 20 hours completing this assignment.
+________________________________________________________________________________

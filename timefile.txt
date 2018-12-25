@@ -1,0 +1,4 @@
+Degree rotation: 90
+Time Elapsed: 104603320 nanoseconds.
+Number of Pixels: 62500
+Time per Pixel: 1674
